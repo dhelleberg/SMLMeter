@@ -19,7 +19,7 @@ std::list<SMLSensor*> *sensors = new std::list<SMLSensor*>();
 MqttConfig mqttConfig;
 MqttClient mqttClient;
 long lastReconnect =  0;
-boolean connected = false;
+
 
 
 //callback if a SML message is received
@@ -28,9 +28,9 @@ void process_message(byte *buffer, size_t len, SMLSensor *sensor)
 	// Parse
 	sml_file *file = sml_file_parse(buffer + 8, len - 16);
 
-	if (connected) {
-		mqttClient.publish(sensor, file);
-	}
+
+  mqttClient.publish(sensor, file);
+
 
 	// free the malloc'd memory
 	sml_file_free(file);

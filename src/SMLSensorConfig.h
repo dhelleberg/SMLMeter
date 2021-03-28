@@ -5,7 +5,7 @@
 #include "SMLSensor.h"
 
 static const SensorConfig SENSOR_CONFIGS[] = {
-    {.pin = 4, //to be checked
+    {.pin = 18, //to be checked
      .name = "smeter/",
      .numeric_only = false,
      .status_led_enabled = true,
