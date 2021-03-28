@@ -24,7 +24,7 @@ void MqttClient::connect()
   {
     char message[64];
     Serial.printf(message, 64, "Hello running SMLReader version %s.", FIRMWARE_VERSION);
-    info(message);
+    publishInfo(message);
   }
 }
 
