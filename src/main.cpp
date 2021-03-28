@@ -113,5 +113,11 @@ void loop() {
   checkWifi(now);
   mqttClient.loop();
   yield();
+
+  // Execute sensor state machines
+	for (std::list<SMLSensor*>::iterator it = sensors->begin(); it != sensors->end(); ++it){
+		(*it)->loop();
+	}
+  yield();
   
 }
