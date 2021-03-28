@@ -21,10 +21,10 @@ void MqttClient::connect()
   Serial.println("Establishing MQTT client connection.");
   client.connect("SMLReader", config.username, config.password);
   if (client.connected())
-  {
-    char message[64];
-    Serial.printf(message, 64, "Hello running SMLReader version %s.", FIRMWARE_VERSION);
-    publishInfo(message);
+  {    
+    Serial.printf("Hello running SMLReader version %s.", FIRMWARE_VERSION);
+    publishInfo("SML Reader online.");
+    publishInfo(FIRMWARE_VERSION);
   }
 }
 
@@ -129,5 +129,5 @@ void MqttClient::publish(const char *topic, const char *payload)
   }
   Serial.printf("Publishing message to '%s':", topic);
   Serial.printf("%s\n", payload);
-  client.publish(topic, payload);
+  client.publish(topic, payload, true, 1);
 }
