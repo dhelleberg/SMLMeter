@@ -3,6 +3,7 @@
 
 #include "MQTT.h"
 #include <sml/sml_file.h>
+#include <map>
 
 struct MqttConfig
 {
@@ -35,6 +36,7 @@ class MqttClient
     MQTTClient client = MQTTClient(512);
     String baseTopic;
     WiFiClient net;
+    std::map<String, String> cache;
 };
 
 

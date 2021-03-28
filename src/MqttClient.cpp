@@ -21,7 +21,7 @@ void MqttClient::connect()
   Serial.println("Establishing MQTT client connection.");
   client.connect("SMLReader", config.username, config.password);
   if (client.connected())
-  {    
+  {
     Serial.printf("Hello running SMLReader version %s.", FIRMWARE_VERSION);
     publishInfo("SML Reader online.");
     publishInfo(FIRMWARE_VERSION);
@@ -81,7 +81,27 @@ void MqttClient::publish(SMLSensor *sensor, sml_file *file)
             prec = 0;
           value = value * pow(10, scaler);
           sprintf(buffer, "%.*f", prec, value);
-          publish(entryTopic + "value", buffer);
+          String val = String(buffer);
+          //check cache first
+          auto entry = cache.find(entryTopic);
+          if (entry == cache.end())
+          {
+            publish(entryTopic + "value", buffer);
+            cache[entryTopic] = val;
+            Serial.println("entry not cache but not identical");
+          }
+          else
+          {
+            String cacheValue = cache[entryTopic];
+            if (cacheValue.compareTo(val) != 0)
+            {
+              publish(entryTopic + "value", buffer);
+              cache[entryTopic] = val;
+              Serial.println("entry in cache but not identical");
+            }
+            else
+              Serial.println("entry in cache and identical");
+          }
         }
         else if (!sensor->config->numeric_only)
         {
@@ -89,7 +109,28 @@ void MqttClient::publish(SMLSensor *sensor, sml_file *file)
           {
             char *value;
             sml_value_to_strhex(entry->value, &value, true);
-            publish(entryTopic + "value", value);
+            String val = String(value);
+            //check cache first
+            auto entry = cache.find(entryTopic);
+            if (entry == cache.end())
+            {
+              publish(entryTopic + "value", value);
+              cache[entryTopic] = val;
+              Serial.println("entry not cache but not identical");
+            }
+            else
+            {
+              String cacheValue = cache[entryTopic];
+              if (cacheValue.compareTo(val) != 0)
+              {
+                publish(entryTopic + "value", value);
+                cache[entryTopic] = val;
+                Serial.println("entry in cache but not identical");
+              }
+              else
+                Serial.println("entry in cache and identical");
+            }
+
             free(value);
           }
           else if (entry->value->type == SML_TYPE_BOOLEAN)
