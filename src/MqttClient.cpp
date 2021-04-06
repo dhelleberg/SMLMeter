@@ -172,3 +172,26 @@ void MqttClient::publish(const char *topic, const char *payload)
   Serial.printf("%s\n", payload);
   client.publish(topic, payload, true, 1);
 }
+
+void MqttClient::publishSensor(float temp, float pressure, float humidty) {
+
+  if (!client.connected())
+  {
+    connect();
+  }
+  if (!client.connected())
+  {
+    // Something failed
+    Serial.println("Connection to MQTT broker failed.");
+    Serial.printf("Unable to publish a message");
+    return;
+  }
+  char array[20];
+  sprintf(array, "%f", temp);
+  client.publish(baseTopic+"/temp", array, true, 1);
+  sprintf(array, "%f", pressure);
+  client.publish(baseTopic+"/pressure", array, true, 1);
+  sprintf(array, "%f", humidty);
+  client.publish(baseTopic+"/humidty", array, true, 1);
+
+}

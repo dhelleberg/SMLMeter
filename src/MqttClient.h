@@ -24,6 +24,7 @@ class MqttClient
     void loop();
     void publishDebug(const char *message);
     void publishInfo(const char *message);
+    void publishSensor(float temp, float pressure, float humidty);
 
     
 

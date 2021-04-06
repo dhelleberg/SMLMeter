@@ -5,6 +5,7 @@
 #include "SMLSensorConfig.h"
 #include <sml/sml_file.h>
 #include "MqttClient.h"
+#include "BME280Sensor.h"
 
 /*Put your SSID & Password*/
 const char* ssid = WSSID;  // Enter SSID here
@@ -19,6 +20,10 @@ std::list<SMLSensor*> *sensors = new std::list<SMLSensor*>();
 MqttConfig mqttConfig;
 MqttClient mqttClient;
 long lastReconnect =  0;
+
+BME280Sensor bme280Sensor;
+
+
 
 
 
@@ -56,9 +61,13 @@ void connectWifi() {
   Serial.println("\n[WIFI] Connected");
   Serial.print("Got IP: ");  Serial.println(WiFi.localIP());
 
-  lastReconnect = millis();
+  lastReconnect = millis(); 
+}
 
-  
+void process_sensorReading(float temp, float pressure, float humidty) {
+  Serial.printf("new sensor reading from bme... temp: %f pressure %f humidty %f publishing...\n",temp,pressure,humidty);
+  mqttClient.publishSensor(temp, pressure, humidty);
+
 }
 
 
@@ -86,6 +95,11 @@ void setup() {
   mqttClient.connect();
   
   Serial.println("mqtt connected");
+
+  Serial.println("setup bme280...");
+  bme280Sensor.setup(process_sensorReading);
+  Serial.println("bme280 done.");
+
 }
 
 void checkWifi(long now) {
@@ -112,6 +126,8 @@ void loop() {
   long now = millis();
   checkWifi(now);
   mqttClient.loop();
+  yield();
+  bme280Sensor.loop();
   yield();
 
   // Execute sensor state machines
