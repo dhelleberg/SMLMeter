@@ -16,9 +16,10 @@ void BME280Sensor::loop() {
   if(now > (lastMeasure + CACHE_TIME)) {
     lastMeasure = now;
 
-    float temp = bme.readTemperature();
-    float pressure = bme.readPressure();
-    float humidity = bme.readHumidity();
+    const float scale = 10.0; 
+    double temp = ((float)((int)(bme.readTemperature() * scale))) / scale;
+    double pressure = ((float)((int)(bme.readPressure()/100.0 * scale))) / scale; 
+    double humidity = ((float)((int)(bme.readHumidity() * scale))) / scale; 
 
     if(humidity != lasthumidty || temp != lastTemp || pressure != lastpressure) {
       Serial.println("measure updates, callback called");

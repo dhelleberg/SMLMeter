@@ -187,11 +187,11 @@ void MqttClient::publishSensor(float temp, float pressure, float humidty) {
     return;
   }
   char array[20];
-  sprintf(array, "%f", temp);
+  sprintf(array, "%.1f", temp);
   client.publish(baseTopic+"/temp", array, true, 1);
-  sprintf(array, "%f", pressure);
+  sprintf(array, "%.1f", pressure);
   client.publish(baseTopic+"/pressure", array, true, 1);
-  sprintf(array, "%f", humidty);
+  sprintf(array, "%.1f", humidty);
   client.publish(baseTopic+"/humidty", array, true, 1);
 
 }

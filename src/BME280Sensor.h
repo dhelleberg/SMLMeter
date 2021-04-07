@@ -18,9 +18,9 @@ class BME280Sensor
     void( *callback)(float temperature, float pressure, float humidty ) = NULL;
     Adafruit_BME280 bme; // I2C
     
-    float lastTemp = 0;
-    float lastpressure = 0;
-    float lasthumidty = 0;
+    double lastTemp = 0;
+    double lastpressure = 0;
+    double lasthumidty = 0;
     long lastMeasure = 0;
 
  };
